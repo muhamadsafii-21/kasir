@@ -3,99 +3,85 @@
 @section('title','Data Transaksi')
 
 @section('content')
-<h2>Data Transaksi</h2>
+<h2 class="mb-4">Data Transaksi</h2>
 
-<div class="container">
-    <div class="my-3 d-flex justify-content-between align-items-center">
-        <div class="col-12 col-sm-8 col-md-5">
-            <form action="" method="get">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="keyword" placeholder="keyword">
-                    <button class="input-group-text btn btn-primary bi bi-search"></button>
-                </div>
+<div class="container mb-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6 col-lg-5">
+            <form action="" method="get" class="d-flex">
+                <input type="text" class="form-control me-2" name="keyword" placeholder="Cari berdasarkan tanggal atau barang">
+                <button class="btn btn-primary bi bi-search"> Cari</button>
             </form>
         </div>
-        <div class="col-auto me-5">
+        <div class="col-md-auto ms-auto">
             <a href="/transaksi-restore" class="btn btn-warning bi bi-cloud-arrow-down-fill"> Restore</a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    Rekapan Hari Ini ({{ \Carbon\Carbon::today()->format('d M Y') }})
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Qty Terjual:</strong> {{ $rekapHarian->total_qty ?? 0 }}</p>
+                    <p class="mb-0"><strong>Total Omzet:</strong> Rp {{ number_format($rekapHarian->total_omzet ?? 0,0,',','.') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    Rekapan Bulan Ini ({{ \Carbon\Carbon::now()->format('F Y') }})
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Qty Terjual:</strong> {{ $rekapBulanan->total_qty ?? 0 }}</p>
+                    <p class="mb-0"><strong>Total Omzet:</strong> Rp {{ number_format($rekapBulanan->total_omzet ?? 0,0,',','.') }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Tabel Transaksi -->
+<div class="table-responsive-sm" style="max-width: 95%;">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 3%;">#</th>
+                <th style="width: 25%;">Barang</th>
+                <th style="width: 20%;">Kasir</th>
+                <th style="width: 15%;">Tanggal</th>
+                <th style="width: 10%;">Jumlah</th>
+                <th style="width: 15%;">Total</th>
+                <th style="width: 12%;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($data as $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td class="text-truncate" style="max-width: 150px;">{{ $item->barang->name }}</td>
+                <td class="text-truncate" style="max-width: 120px;">{{ $item->kasir->name }}</td>
+                <td>{{ $item->created_at->format('d M Y H:i') }}</td>
+                <td>{{ $item->qty }}</td>
+                <td>Rp {{ number_format($item->total,0,',','.') }}</td>
+                <td>
+                    <form class="d-inline" action="/transaksi/{{ $item->id }}" method="POST" onclick="return confirm('Apakah yakin ingin menghapus?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm bi bi-trash"></button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
-<table class="table m-2">
-    <tr>
-        <th>#</th>
-        <th>Barang</th>
-        <th>Kasir</th>
-        <th>Tanggal</th>
-        <th>Qty</th>
-        <th>Total</th>
-        <th>Action</th>
-
-    </tr>
-    @foreach($data as $item)
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $item->barang->name }}</td>
-        <td>{{ $item->kasir->name }}</td>
-        <td>{{ $item->created_at }}</td>
-        <td>{{ $item->qty }}</td>
-        <td>{{ $item->total }}</td>
-        <td>
-            {{-- <a href="/transaksi-edit/{{ $item->id }}" class="btn btn-success bi bi-pencil-fill"></a> --}}
-            <form class="d-inline" action="/transaksi/{{ $item->id }}" method="POST" onclick="return confirm('are you sure?');">
-                @csrf
-                @method('DELETE')
-                <button class="btn btn-danger bi bi-trash"></button>
-            </form>
-            {{-- <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Launch demo modal
-            </button> --}}
-        </td>
-    </tr>
-    @endforeach
-</table>
-      {{-- <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <form action="/transaksi/{{ $item->id }}">
-                @csrf
-                <div class="form-group">
-                    <label for="barang_id">Barang</label>
-                    <input type="text" class="form-control" id="barang_id" name="barang_id" readonly value="{{ $item->barang->name }}">
-                </div>
-                <div class="form-group">
-                    <label for="karyawan">Karyawan</label>
-                    <input type="text" class="form-control" id="karyawan" name="karyawan" readonly value="{{ $item->kasir->name }}">
-                </div>
-                <div class="form-group">
-                    <label for="qty">Qty</label>
-                    <input type="text" class="form-control" id="qty" name="qty" value="{{ $item-> }}">
-                </div>
-                <div class="form-group">
-                    <label for="total">Total</label>
-                    <input type="text" class="form-control" id="total" name="total" value="{{ $item-> }}">
-                </div>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-
-            </div>
-        </div>
-        </div>
-    </div>
-    end modal --}}
-  
-<div class="my-5">
+<div class="my-4">
     {{ $data->links() }}
 </div>
 @endsection

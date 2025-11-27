@@ -50,9 +50,17 @@ class BarangController extends Controller
         }
     public function delete($id)
         {
-            $data = Barang::with('pemasok')->findOrFail($id);
-            $data->delete();
-            return redirect('/barang');
+    $barang = Barang::with('transaksis')->findOrFail($id);
 
+    // Hapus semua transaksi terkait (soft delete)
+    if ($barang->transaksis()->count() > 0) {
+        $barang->transaksis()->delete();
+    }
+
+    // Hapus barang
+    $barang->delete();
+
+    return redirect('/barang')->with('success', 'Barang dan transaksi terkait berhasil dihapus.');
         }
+
 }

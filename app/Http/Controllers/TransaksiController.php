@@ -13,17 +13,34 @@ use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
-    public function index(Request $request)
-        {
-            // search
-            $keyword = $request->keyword;
-            // 
-            $data = Transaksi::with('kasir','barang')
-            ->where('created_at', 'LIKE', '%'.$keyword.'%')
-            ->orderByDesc('id')
-            ->Paginate(10);
-            return view('transaksi.transaksi', ['data' => $data]);
-        }
+   public function index(Request $request)
+{
+    $keyword = $request->keyword;
+
+    $data = Transaksi::with('kasir','barang')
+        ->when($keyword, function($query, $keyword){
+            $query->whereDate('created_at', 'LIKE', '%'.$keyword.'%');
+        })
+        ->orderByDesc('id')
+        ->paginate(10);
+
+    // Rekapan Harian
+    $rekapHarian = Transaksi::whereDate('created_at', today())
+                    ->selectRaw('SUM(qty) as total_qty, SUM(total) as total_omzet')
+                    ->first();
+
+    // Rekapan Bulanan
+    $rekapBulanan = Transaksi::whereMonth('created_at', now()->month)
+                    ->selectRaw('SUM(qty) as total_qty, SUM(total) as total_omzet')
+                    ->first();
+
+    return view('transaksi.transaksi', [
+        'data' => $data,
+        'rekapHarian' => $rekapHarian,
+        'rekapBulanan' => $rekapBulanan
+    ]);
+}
+
     public function show($id)
         {
             # code...

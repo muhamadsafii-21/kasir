@@ -14,7 +14,7 @@
         </div>
     </div>
 </div>
-<a class="btn btn-primary bi bi-plus-circle" href="karyawan-create"> New</a>     
+<a class="btn btn-primary bi bi-plus-circle" href="/pemasok-create"> New</a>     
 <table class="table m-2">
     <tr>
         <th>#</th>

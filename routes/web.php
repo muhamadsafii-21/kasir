@@ -54,6 +54,8 @@ Route::get('/transaksi-kasir', [TransaksiController::class, 'create']);
 Route::post('/transaksi', [TransaksiController::class, 'store']);
 Route::post('/transaksi-confirm', [TransaksiController::class, 'konfirmasi']);
 Route::delete('/delete-transaksi/{id}', [TransaksiController::class, 'delete']);
+Route::post('/transaksi-confirm', [TransaksiController::class, 'confirm']);
+
 
 
 

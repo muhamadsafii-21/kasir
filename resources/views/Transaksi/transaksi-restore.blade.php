@@ -25,7 +25,7 @@
         <th>Barang</th>
         <th>Kasir</th>
         <th>Tanggal</th>
-        <th>Qty</th>
+        <th>Jumlah</th>
         <th>Total</th>
         <th>Action</th>
 

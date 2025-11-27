@@ -23,7 +23,7 @@
             <input type="text" class="form-control" id="z" readonly value="{{ $data->created_at }}">
         </div>
         <div class="form-group">
-            <label for="qty">Qty</label>
+            <label for="qty">Jumlah</label>
             <input type="text" class="form-control" id="qty" name="qty" value="{{ $data->qty }}">
         </div>
         <div class="form-group">

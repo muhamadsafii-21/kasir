@@ -23,7 +23,9 @@
         <div class="form-group">
             <label for="harga">Pemasok</label>
             <select name="pemasok_id" id="pemasok_id" class="form-control">
-                <option value="{{ $data->pemasok_id }}">{{ $data->pemasok->name }}</option>
+                <option value="{{ $data->pemasok_id }}">
+        {{ optional($data->pemasok)->name ?? 'Tidak ada pemasok' }}
+    </option>
                 @foreach($pemasok as $item)
                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach

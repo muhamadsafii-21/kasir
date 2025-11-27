@@ -71,7 +71,7 @@
           <th>No</th>
           <th>Nama Barang</th>
           <th>Harga</th>
-          <th>Qty</th>
+          <th>Jumlah</th>
           <th>Total</th>
           <th>Action</th>
       </tr>

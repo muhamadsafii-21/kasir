@@ -50,7 +50,7 @@
         <td>{{ $item->name }}</td>
         <td>{{ $item->stok }}</td>
         <td>{{ $item->harga }}</td>
-        <td>{{ $item->pemasok->name }}</td>
+        <td>{{ $item->pemasok->name ?? 'Tidak ada pemasok' }}</td>
         <td>
             <a href="barang-edit/{{ $item->id }}" class="btn btn-success bi bi-pencil-fill"></a>
             <form action="barang/{{ $item->id }}" method="POST" class="d-inline">

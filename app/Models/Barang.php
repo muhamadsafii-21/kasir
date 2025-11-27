@@ -4,27 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Barang extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'id','name','stok','harga','pemasok_id'
-    ];
+    protected $fillable = ['name', 'stok', 'harga', 'pemasok_id'];
 
-    public function transaksi()
+    // Relasi ke transaksi
+    public function transaksis()
     {
-        return $this->hasMany(Transaksi::class, 'barang_id', 'id');
+        return $this->hasMany(\App\Models\Transaksi::class, 'barang_id');
     }
 
-    public function temp_purchase()
-    {
-        return $this->hasMany(TempPurchase::class, 'barang_id', 'id');
-    }
-
+    // Relasi ke pemasok
     public function pemasok()
     {
-        return $this->belongsTo(Pemasok::class, 'pemasok_id', 'id');
+        return $this->belongsTo(\App\Models\Pemasok::class, 'pemasok_id');
     }
 }
